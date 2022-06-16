@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:trying_database_php/real_app/help/constants.dart';
 import 'package:trying_database_php/real_app/rendezVous/rendez_vous.dart';
 
+import 'fair_rendez_vous.dart';
+
 class RdTile extends StatelessWidget {
   RendezVous rendezVous ;
   RdTile({required this.rendezVous});
@@ -18,6 +20,12 @@ class RdTile extends StatelessWidget {
                 color: greyish,
               ),
               child : ListTile(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  FairRendezVous(rendezVous: this.rendezVous,)),
+                  );
+                },
                 tileColor: greyish,
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

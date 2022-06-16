@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:trying_database_php/real_app/Login/connecter.dart';
+import 'package:trying_database_php/real_app/Login/info_client.dart';
 import 'package:trying_database_php/real_app/help/constants.dart';
 import 'package:trying_database_php/real_app/compteur/page_compteur.dart';
 import 'package:trying_database_php/real_app/pages/form_page.dart';
+import 'package:trying_database_php/real_app/pages/info_mod.dart';
 import 'package:trying_database_php/real_app/reclamation/rec_list.dart';
 import 'package:trying_database_php/real_app/rendezVous/en_attente.dart';
 import '../library.dart' as global;
@@ -19,7 +22,7 @@ class Menu extends StatelessWidget {
               style: TextStyle(fontSize: 17),
             ),
             accountEmail: Text(
-                'Nouha Belkacemi',
+                '${global.client.nom} ${global.client.prenom}',
               style: TextStyle(fontSize: 15),
             ),
             decoration: BoxDecoration(
@@ -42,8 +45,8 @@ class Menu extends StatelessWidget {
               style: menuTextStyle,
             ),
             onTap: (){
-              Navigator.of(context)
-                  .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => FormPage()));
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  FormPage()), (Route<dynamic> route) => false);
             },
           ),
           Divider(
@@ -63,8 +66,9 @@ class Menu extends StatelessWidget {
               style: menuTextStyle,
             ),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => ReclList()));
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  ReclList()), (Route<dynamic> route) => false);
+
             },
           ),
           ListTile(
@@ -77,9 +81,24 @@ class Menu extends StatelessWidget {
               style: menuTextStyle,
             ),
             onTap: (){
-              Navigator.of(context)
-                  .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => EnAttente()));
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  EnAttente()), (Route<dynamic> route) => false);
 
+            },
+          ),
+
+          ListTile(
+            leading: Icon(
+              Icons.account_balance_wallet,
+              color: greyColor,
+            ),
+            title: Text(
+              'Compteur',
+              style: menuTextStyle,
+            ),
+            onTap: () {
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  PageCompteur()), (Route<dynamic> route) => false);
             },
           ),
           Divider(
@@ -91,16 +110,30 @@ class Menu extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(
-              Icons.account_balance_wallet,
+              Icons.account_circle,
               color: greyColor,
             ),
             title: Text(
-              'Compteur',
+              'Mes informations',
               style: menuTextStyle,
             ),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => PageCompteur()));
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  infoClient()), (Route<dynamic> route) => false);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.logout,
+              color: greyColor,
+            ),
+            title: Text(
+              'Se deconnecter',
+              style: menuTextStyle,
+            ),
+            onTap: () {
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  Login()), (Route<dynamic> route) => false);
             },
           ),
         ],

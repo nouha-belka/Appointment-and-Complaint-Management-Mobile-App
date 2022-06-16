@@ -5,6 +5,7 @@ import 'package:trying_database_php/real_app/reclamation/reclamation_form.dart';
 import 'package:trying_database_php/real_app/rendezVous/envoye_raison.dart';
 import 'package:trying_database_php/real_app/widgets/form_container.dart';
 import 'package:trying_database_php/real_app/widgets/menu.dart';
+import '../library.dart' as global;
 class FormPage extends StatefulWidget {
   const FormPage({Key? key}) : super(key: key);
 

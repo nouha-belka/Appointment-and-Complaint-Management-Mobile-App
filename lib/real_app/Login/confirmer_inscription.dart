@@ -16,8 +16,10 @@ class _ConfirmerState extends State<Confirmer> {
   String nom,prenom,date,tel,email,code;
   _ConfirmerState({required this.code,required this.nom,required this.prenom,required this.date,required this.tel,required this.email});
 
-
+  final _formKey = GlobalKey<FormState>();
   TextStyle lableStyle = TextStyle(color: greyColor, fontSize: 22, );
+  bool isObs1 = true;
+  bool isObs2 = true;
   // String code = "123456789";
   late TextEditingController passCtrl, passConCtrl;
   bool processing = false;
@@ -61,76 +63,118 @@ class _ConfirmerState extends State<Confirmer> {
       resizeToAvoidBottomInset : false,
       backgroundColor: mainColor,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  containerShadow
-                ],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                  topRight: Radius.circular(60),
-                ),
-              ),
-              padding: const EdgeInsets.all(40),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height,
+            ),
+            child: Form(
+              key: _formKey,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 35),
-                    child: Text("un compte a été créé voici votre \ncode client: ${code}\n veuillez saisier un mot de passe pour finir la procédure",
-                        style: lableStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 20 ,),
-                  TextField(
-                      controller: passCtrl,
-                      decoration: textInputDeco.copyWith(labelText: "Mot de passe",hintText: 'Mot de passe', prefixIcon: Icon(
-                        Icons.lock,
-                        color: Colors.grey[600],
-                      ),)
-                  ),
-                  SizedBox(height: 20 ,),
-                  TextField(
-                      controller: passConCtrl,
-                      decoration: textInputDeco.copyWith(labelText: "Confirmer Mot de passe",hintText: 'Confirmer Mot de passe' , prefixIcon: Icon(
-                        Icons.lock,
-                        color: Colors.grey[600],
-                      ),)
-                  ),
-
-                  SizedBox(height: 50 ,),
-                  ElevatedButton(
-                    onPressed: processing == false ? (){
-                      ajouterClient();
-                    } : null,
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0),)
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        containerShadow
+                      ],
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(60),
+                        topRight: Radius.circular(60),
                       ),
-                      backgroundColor: MaterialStateProperty.all<Color>(mainColor),
                     ),
-                    child:  Padding(
-                      padding:  EdgeInsets.fromLTRB(30, 13, 30, 13),
-                      child: processing == false ? Text(
-                        "Confirmer",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
+                    padding: const EdgeInsets.all(40),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 35),
+                          child: Text("un compte a été créé voici votre \ncode client: ${code}\n veuillez saisier un mot de passe pour finir la procédure",
+                              style: lableStyle,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ) : spinkit,
+                        SizedBox(height: 20 ,),
+                        TextFormField(
+                            controller: passCtrl,
+                            obscureText: isObs1,
+                            validator: (val) => val!.isEmpty ? 'Veuillez saisir le mot de passe' : RegExp(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}").hasMatch(val) ? null : 'le mot de passe doit contenir au moins un majuscule  et un numéro' ,
+                            decoration: textInputDeco.copyWith(labelText: "Mot de passe",hintText: 'Mot de passe',
+                              prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.grey[600],
+                            ),
+                              suffixIcon: IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    isObs1 = !isObs1;
+                                  });
+                                },
+                                icon: Icon(
+                                  isObs1 ? Icons.visibility : Icons.visibility_off,
+                                  color: Colors.grey[900],
+                                ),
+                              ),
+                            )
+                        ),
+                        SizedBox(height: 20 ,),
+                        TextFormField(
+                            controller: passConCtrl,
+                            obscureText: isObs2,
+                            validator: (val) => val != passCtrl.text ? 'Veuillez saisir le mot de passe' :  null  ,
+                            decoration: textInputDeco.copyWith(labelText: "Confirmer Mot de passe",hintText: 'Confirmer Mot de passe' ,
+                              prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.grey[600],
+                            ),
+                              suffixIcon: IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    isObs2 = !isObs2;
+                                  });
+                                },
+                                icon: Icon(
+                                  isObs2 ? Icons.visibility : Icons.visibility_off,
+                                  color: Colors.grey[900],
+                                ),
+                              ),
+                            )
+                        ),
+
+                        SizedBox(height: 50 ,),
+                        ElevatedButton(
+                          onPressed: processing == false ? (){
+                            if (_formKey.currentState!.validate()){
+                              ajouterClient();
+                            }
+                          } : null,
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0),)
+                            ),
+                            backgroundColor: MaterialStateProperty.all<Color>(mainColor),
+                          ),
+                          child:  Padding(
+                            padding:  EdgeInsets.fromLTRB(30, 13, 30, 13),
+                            child: processing == false ? Text(
+                              "Confirmer",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ) : spinkit,
+                          ),
+                        ),
+                        SizedBox(height: 30 ,),
+
+                      ],
                     ),
                   ),
-                  SizedBox(height: 30 ,),
 
                 ],
               ),
             ),
-
-          ],
+          ),
         ),
       ),
     );

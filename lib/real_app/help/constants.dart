@@ -21,6 +21,14 @@ var  textInputDeco = InputDecoration(
     borderSide: BorderSide(color : mainColor,width: 2),
     borderRadius: BorderRadius.circular(15),
   ),
+  errorBorder: OutlineInputBorder(
+    borderSide: BorderSide(color : Colors.red,width: 2),
+    borderRadius: BorderRadius.circular(15),
+  ),
+  focusedErrorBorder: OutlineInputBorder(
+    borderSide: BorderSide(color : Colors.red,width: 2),
+    borderRadius: BorderRadius.circular(15),
+  ),
   labelStyle: TextStyle(
     color: Color.fromRGBO(170, 168, 168, 1.0)
   ),

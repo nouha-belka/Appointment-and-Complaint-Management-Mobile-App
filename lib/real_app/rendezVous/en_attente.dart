@@ -36,9 +36,8 @@ class _EnAttenteState extends State<EnAttente> {
       for(var i = 0; i < reasonsList.length; i++){
         var map = HashMap.from((reasonsList[i]));
         setState(() {
-          raisons.add(Raison(sujet: map['subject'], description: map['content'], etat: map['state']),);
+          raisons.add(Raison(sujet: map['subject'], description: map['content'], etat: map['state'], justification: map['just']),);
         });
-        print(map);
       }
 
     }else{
@@ -51,7 +50,6 @@ class _EnAttenteState extends State<EnAttente> {
           setState(() {
             rendezVouss.add(RendezVous(id: map['id'],sujet: map['subject'], description: map['content'], date: map['date'],heure: map['heure'],agent: map['agent']),);
           });
-          print(map);
 
         }
       }
@@ -223,7 +221,7 @@ class _EnAttenteState extends State<EnAttente> {
               height: color3 ? MediaQuery.of(context).size.height*0.63  : MediaQuery.of(context).size.height*0.72,
               child: color1 || color4  ? ListView(
                 children: raisons.map((raison){
-                  return RaisonTile(raison: raison,);
+                  return RaisonTile(raison: raison, page: color1,);
                 } ).toList(),
               ):  ListView(
                 children: rendezVouss.map((rd){

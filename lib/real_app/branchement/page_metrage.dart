@@ -21,6 +21,7 @@ class _MetragePageState extends State<MetragePage> {
   String date = '0';
   String metrage = '0';
   String diametre = '0';
+  String agent = "";
   TextStyle lableStyle = TextStyle(color: greyColor, fontSize: 25, );
   TextStyle textStyle = TextStyle(color: greyColor, fontSize: 18, fontWeight: FontWeight.w600);
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
@@ -29,6 +30,7 @@ class _MetragePageState extends State<MetragePage> {
         "http://${global.localhost}/php_project/web-flutter/metrage_info.php";
     var data = {
       "code": global.compteur_id,
+      // "code": "22MDAA01",
     };
     var res = await http.post(Uri.parse(url), body: data);
     var response = jsonDecode(res.body);
@@ -44,6 +46,7 @@ class _MetragePageState extends State<MetragePage> {
         metrage = map["metrage"].toString();
         diametre = map["diametre"].toString();
         date = map["date"];
+        agent = map["emp"];
       });
       print(map);
     }
@@ -94,7 +97,7 @@ class _MetragePageState extends State<MetragePage> {
           ),
           returnTextContainer("Métrage","${metrage} m"),
           returnTextContainer("Diamètre","${diametre} m"),
-          returnTextContainer("Agent","mouhamed"),
+          returnTextContainer("Agent",agent),
 
         ],
       ),

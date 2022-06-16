@@ -20,6 +20,7 @@ class BranchementPage extends StatefulWidget {
 class _BranchementPageState extends State<BranchementPage> {
   String date = "null" ;
   String? codeComp;
+  String agent = "";
   String etat = "en attente de branchement";
   TextStyle lableStyle = TextStyle(color: greyColor, fontSize: 25, );
   TextStyle textStyle = TextStyle(color: greyColor, fontSize: 18, fontWeight: FontWeight.w600);
@@ -71,7 +72,7 @@ class _BranchementPageState extends State<BranchementPage> {
             ),
           ),
           // returnTextContainer("Agent","${codeComp}"),
-          returnTextContainer("Code client","${global.client_id}"),
+          returnTextContainer("Agent",agent),
           returnTextContainer("Code compteur","${codeComp}"),
         ],
       ),
@@ -83,6 +84,7 @@ class _BranchementPageState extends State<BranchementPage> {
         "http://${global.localhost}/php_project/web-flutter/branchement.php";
     var data = {
       "code": global.compteur_id,
+      // "code": "22MDAA01",
     };
     var res = await http.post(Uri.parse(url), body: data);
     var response = jsonDecode(res.body);
@@ -94,6 +96,7 @@ class _BranchementPageState extends State<BranchementPage> {
         date = map["date"].toString();
         etat = map["etat"];
         codeComp = map["CodeComp"];
+        agent = map["emp"];
       });
       print(map);
       // print(montant == "null");

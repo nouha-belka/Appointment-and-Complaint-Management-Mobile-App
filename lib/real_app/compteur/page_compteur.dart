@@ -36,7 +36,6 @@ class _PageCompteurState extends State<PageCompteur> {
       setState(() {
         comps.add(Compteur(id: map['code_comp'],adresse: map['adresse'],etat: map['etat']),);
       });
-      print(map);
     }
   }@override
   void initState() {

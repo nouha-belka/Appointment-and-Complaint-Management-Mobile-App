@@ -4,59 +4,59 @@ import 'package:flutter/material.dart';
 import 'package:trying_database_php/real_app/Login/confirmer_inscription.dart';
 import 'package:trying_database_php/real_app/help/constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:trying_database_php/real_app/widgets/menu.dart';
 import '../library.dart' as global;
 
-class infoClientForm extends StatefulWidget {
-  const infoClientForm({Key? key}) : super(key: key);
+class infoClient extends StatefulWidget {
+  const infoClient({Key? key}) : super(key: key);
 
   @override
-  _infoClientFormState createState() => _infoClientFormState();
+  _infoClientState createState() => _infoClientState();
 }
 
-class _infoClientFormState extends State<infoClientForm> {
+class _infoClientState extends State<infoClient> {
   late TextEditingController  nomCtrl, prenomCtrl,dateCtrl,telCtrl,emailCtrl;
   final _formKey = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
+
   String? code;
   bool processing = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    nomCtrl =  TextEditingController();
-    prenomCtrl =  TextEditingController();
-    dateCtrl =  TextEditingController();
-    telCtrl =  TextEditingController();
-    emailCtrl =  TextEditingController();
+    nomCtrl =  TextEditingController(text: global.client.nom);
+    prenomCtrl =  TextEditingController(text: global.client.prenom);
+    dateCtrl =  TextEditingController(text: global.client.date);
+    telCtrl =  TextEditingController(text: global.client.tel);
+    emailCtrl =  TextEditingController(text: global.client.email);
   }
-  void generateId() async{
+  void modify() async{
     setState(() {
       processing = true;
     });
-    // while(true){
-    //   code = random.nextInt(100000) + 10;
-    //   print(code.toString());
-    //   var url = "http://192.168.56.1/php_project/web-flutter/check_code.php";
-    //   var data = {
-    //     "code" : code.toString(),
-    //   };
-    //   var res = await http.post(Uri.parse(url),body: data);
-    //   if(jsonDecode(res.body) == "false"){
-    //     break;
-    //   }
-    // }
-    var url = "http://${global.localhost}/php_project/web-flutter/check_code.php";
-    var res = await http.get(Uri.parse(url));
+    var url = "http://${global.localhost}/php_project/web-flutter/modifiClient.php";
+    var data = {
+      "code" : global.client_id ,
+      "nom" : nomCtrl.text ,
+      "prenom" : prenomCtrl.text ,
+      "date" : dateCtrl.text ,
+      "tel" : telCtrl.text ,
+      "email" : emailCtrl.text ,
+    };
+    var res = await http.post(Uri.parse(url),body: data);
     // print(jsonDecode(res.body));
     String response = jsonDecode(res.body);
     if(response != "false"){
-      code = response.toString();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) =>  Confirmer(code: code!,nom: nomCtrl.text,prenom: prenomCtrl.text,date: dateCtrl.text,tel: telCtrl.text,email: emailCtrl.text)),
-      );
+      Fluttertoast.showToast(msg: "informations modifiées",toastLength: Toast.LENGTH_SHORT);
+      setState(() {
+        global.client.nom = nomCtrl.text;
+        global.client.prenom = prenomCtrl.text;
+        global.client.date = dateCtrl.text;
+        global.client.tel = telCtrl.text;
+        global.client.email = emailCtrl.text;
+      });
     }
-
-
     setState(() {
       processing = false;
     });
@@ -64,7 +64,9 @@ class _infoClientFormState extends State<infoClientForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      key: _scaffoldState,
+      drawer: Menu(),
+      // resizeToAvoidBottomInset : false,
       backgroundColor: mainColor,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -77,6 +79,22 @@ class _infoClientFormState extends State<infoClientForm> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding:  EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.05, 0, 0, MediaQuery.of(context).size.height*0.06),
+                      child: InkWell(
+                        onTap: (){
+                          _scaffoldState.currentState!.openDrawer();
+                        },
+                        child: Icon(
+                          Icons.menu_rounded,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ),
                   Container(
                     decoration: const BoxDecoration(
                       color: Colors.white,
@@ -111,15 +129,15 @@ class _infoClientFormState extends State<infoClientForm> {
                         ),
                         SizedBox(height: 15 ,),
                         TextFormField(
-                            controller: dateCtrl,
-                            validator: (val) => val!.isEmpty ? 'Veuillez saisir la date' :  null  ,
-                            decoration: textInputDeco.copyWith(labelText: "Date de naissance",hintText: 'Date de naissance' , prefixIcon: Icon(
-                              Icons.calendar_today_sharp,
-                              color: Colors.grey[600],
-                            ),),
+                          controller: dateCtrl,
+                          validator: (val) => val!.isEmpty ? 'Veuillez saisir la date' :  null  ,
+                          decoration: textInputDeco.copyWith(labelText: "Date de naissance",hintText: 'Date de naissance' , prefixIcon: Icon(
+                            Icons.calendar_today_sharp,
+                            color: Colors.grey[600],
+                          ),),
                           readOnly: true,  //set it true, so that user will not able to edit text
                           onTap: () async {
-                             var  date = await datePick( context);
+                            var  date = await datePick( context);
                             setState(() {
                               dateCtrl.text = date;
                             });
@@ -149,7 +167,7 @@ class _infoClientFormState extends State<infoClientForm> {
                         ElevatedButton(
                           onPressed: (){
                             if (_formKey.currentState!.validate()){
-                              generateId();
+                              modify();
                             }
                           },
                           style: ButtonStyle(
@@ -161,7 +179,7 @@ class _infoClientFormState extends State<infoClientForm> {
                           child:  Padding(
                             padding:  EdgeInsets.fromLTRB(30, 13, 30, 13),
                             child: processing == false ? Text(
-                              "Creér compte",
+                              "Modifier",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
